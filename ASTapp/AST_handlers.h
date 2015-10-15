@@ -8,7 +8,7 @@ int getMyAppBarState();
 void getTaskbarState();
 void restoreTaskbarState();
 void OnSettingsChange(LPARAM lParam);
-void checkTabletMode();
+void checkTabletMode(int delay = 0);
 DWORD readDWORDFromReg(HKEY hKey, LPTSTR subkey, DWORD * vp);
 LONG writeDWORDToReg(HKEY inKey, LPTSTR valname, DWORD vp);
 

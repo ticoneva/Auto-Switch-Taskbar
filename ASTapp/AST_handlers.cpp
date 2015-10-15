@@ -101,13 +101,13 @@ LONG writeDWORDToReg(HKEY inKey, LPTSTR valname, DWORD vp) {
 
 }
 
-void checkTabletMode() {
+void checkTabletMode(int delay) {
 	LONG retVal1, retVal2, retVal3;
 	HKEY hKey;
 	DWORD dwDisp,tabletMode;
 
-	//It can take up to 200ms for the registry entry on tablet mode to change in atom tablets
-	Sleep(queryDelay);
+	//Wait a while
+	Sleep(delay);
 
 	changeStatusText(TEXT("Reading registry."));
 
@@ -176,7 +176,8 @@ void OnSettingsChange(LPARAM lParam)
 		if (CSTR_EQUAL == CompareStringOrdinal(message, -1, TEXT("UserInteractionMode"), -1, TRUE))
 		{
 			//Check registry to see if we're in tablet mode
-			checkTabletMode();
+			//It can take up to 200ms for the registry entry on tablet mode to change in atom tablets
+			checkTabletMode(queryDelay);
 		}
 	}
 }

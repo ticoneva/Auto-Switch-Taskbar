@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_070EA04C6615451BABC748F8A8919ABD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_90A1061EADCE462898B237B14DEACBCE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -96,6 +102,20 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_B56F422F23BC4E73ABE9F139BB6D0F8A"
+            {
+            "Name" = "8:runOnce.exe"
+            "Condition" = "8:"
+            "Object" = "8:_070EA04C6615451BABC748F8A8919ABD"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:\"[TARGETDIR]AutoShowTaskbar.exe\""
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_3FD5949E_04BD_45C2_92C9_E0CD3535AE24"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -111,6 +131,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_070EA04C6615451BABC748F8A8919ABD"
+            {
+            "SourcePath" = "8:..\\..\\Release\\runOnce.exe"
+            "TargetName" = "8:runOnce.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_D69192376630455EA64DE3BC60326652"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90A1061EADCE462898B237B14DEACBCE"
             {
             "SourcePath" = "8:..\\..\\Release\\AutoShowTaskbar.exe"
@@ -188,7 +228,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Auto Switch Taskbar"
         "ProductCode" = "8:{B0F0CD61-783C-4E20-8A2E-6CAA535F0AB2}"
-        "PackageCode" = "8:{93CF76A8-BA9B-42B0-8C7F-869FD5BFAC32}"
+        "PackageCode" = "8:{82FCAB7E-9215-45A4-B3F8-4859C8EF482E}"
         "UpgradeCode" = "8:{7F0D039C-94BC-499A-987F-49FAB30325B9}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
