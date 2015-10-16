@@ -21,7 +21,7 @@ bool duplicateExist(LPCWSTR lpName) {
 }
 
 void createChkBoxes(HWND hWnd,LPARAM lParam) {
-	CreateWindow(TEXT("Static"), TEXT("Auto-hide the taskbar"),
+	CreateWindow(TEXT("Static"), TEXT("Auto-hide the taskbar when:"),
 		WS_CHILD | WS_VISIBLE, 
 		20, 10, 400, 300, 
 		hWnd, 0, 0, 0);

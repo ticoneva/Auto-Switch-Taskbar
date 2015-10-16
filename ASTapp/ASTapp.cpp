@@ -39,6 +39,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		//Another instance exist. Show it and quit self
 		HWND anotherMe = FindWindow(szWindowClass, 0);
 		ShowWindow(anotherMe, SW_SHOW);
+		return FALSE;
 	} else {
 		//New instance
 
