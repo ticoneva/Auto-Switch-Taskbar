@@ -2,7 +2,7 @@
 #include "AST_handlers.h"
 
 static int AppBarState = 0;
-static int queryDelay = 200;
+static int queryDelay = -100;
 static int hideSettings[4];
 
 void initAST(HWND hWnd) {
@@ -39,10 +39,18 @@ void initAST(HWND hWnd) {
 	//Query delay
 	retVal2 = readDWORDFromReg(hKey, TEXT("queryDelay"), (DWORD*)&tbMode);
 	if (retVal2 == ERROR_SUCCESS) {
-		queryDelay = tbMode;
+		tbMode = tbMode;
+		changeComboSel(tbMode);
+		changeDelay(tbMode, FALSE);
 	}
 
 	retVal3 = RegCloseKey(hKey);
+}
+
+void changeDelay(int delay, BOOL saveToReg) {
+	if (saveToReg)
+		writeDWORDToReg(HKEY_CURRENT_USER, TEXT("queryDelay"), delay);
+	queryDelay = (delay-1) * 100;
 }
 
 void setHideSetting(int id, DWORD value) {
@@ -107,7 +115,7 @@ void checkTabletMode(int delay) {
 	DWORD dwDisp,tabletMode;
 
 	//Wait a while
-	Sleep(delay);
+	if (delay > 0) Sleep(delay);
 
 	changeStatusText(TEXT("Reading registry."));
 
@@ -121,6 +129,9 @@ void checkTabletMode(int delay) {
 	//Proceed if we have retrieved the tablet mode value
 
 		changeStatusText(TEXT("Tablet Mode data retrieved."));
+
+		//Reverse tablet mode data in reserve detection mode
+		if(delay < 0) tabletMode = 1 - tabletMode;
 
 		if (tabletMode == 1) {
 			//Tablet mode

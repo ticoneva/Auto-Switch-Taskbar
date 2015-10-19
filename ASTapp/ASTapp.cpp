@@ -11,6 +11,7 @@ HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 BOOL canQuit = false;
+UINT ASTM_QUIT;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -44,6 +45,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		//New instance
 
 		MyRegisterClass(hInstance);
+		ASTM_QUIT = RegisterWindowMessage(TEXT("ASTM_quit"));
 
 		// Perform application initialization:
 		if (!InitInstance(hInstance, nCmdShow))
@@ -112,7 +114,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 300, 340, NULL, NULL, hInstance, NULL);
+      CW_USEDEFAULT, 0, 300, 420, NULL, NULL, hInstance, NULL);
 
    if (!hWnd)
    {
@@ -139,87 +141,103 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
+	int wmId, wmEvent, ItemIndex;
 	PAINTSTRUCT ps;
 	HDC hdc;
 	static HBRUSH hBrush;
 
-	switch (message)
-	{
-	case WM_SETTINGCHANGE:
-		OnSettingsChange(lParam);
-		break;
-	case WM_DISPLAYCHANGE:
-		checkTabletMode();
-		break;
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
+	if (message == ASTM_QUIT) {
+		//Quit message from installer
+		canQuit = true;
+		PostMessage(hWnd, WM_CLOSE, 0, 0);
+	}
+	else {
 
-		// Parse the menu selections:
-		switch (wmId)
+		switch (message)
 		{
-		//These are the checkboxes events
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-			chkBoxChange(hWnd,wmId);
+		case WM_SETTINGCHANGE:
+			OnSettingsChange(lParam);
 			break;
+		case WM_DISPLAYCHANGE:
+			checkTabletMode();
+			break;
+		case WM_COMMAND:
+			wmId = LOWORD(wParam);
+			wmEvent = HIWORD(wParam);
 
-		//Minimize button
-		case 5:
-			ShowWindow(hWnd, SW_HIDE);
-			break;
+			// Parse the menu selections:
+			switch (wmId)
+			{
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+				//These are the checkboxes events
+				chkBoxChange(hWnd, wmId);
+				break;
 
-		//Shutdown button
-		case 6:
-			canQuit = true;
-			PostMessage(hWnd, WM_CLOSE, 0, 0);
+			case 5:
+				//Delay-time combobox
+				ItemIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL,
+					(WPARAM)0, (LPARAM)0);
+				cbChangeDelay(ItemIndex);
+				break;
+
+			case 6:
+				//Minimize button
+				ShowWindow(hWnd, SW_HIDE);
+				break;
+
+			case 7:
+				//Shutdown button
+				canQuit = true;
+				PostMessage(hWnd, WM_CLOSE, 0, 0);
+				break;
+			case IDM_ABOUT:
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+				break;
+			case IDM_EXIT:
+				DestroyWindow(hWnd);
+				break;
+			default:
+				return DefWindowProc(hWnd, message, wParam, lParam);
+			}
 			break;
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+		case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
+			// TODO: Add any drawing code here...
+			EndPaint(hWnd, &ps);
 			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
+		case WM_SYSCOMMAND:
+			if (wParam == SC_CLOSE)
+				if (canQuit) {
+					return DefWindowProc(hWnd, message, wParam, lParam);
+				}
+				else {
+					ShowWindow(hWnd, SW_HIDE);
+				}
+				break;
+		case WM_DESTROY:
+			restoreTaskbarState();
+			PostQuitMessage(0);
+			break;
+		case WM_CREATE:
+			//Create GUI checkboxes
+			createChkBoxes(hWnd, lParam);
+			//Initialize AST features
+			initAST(hWnd);
+			break;
+		case WM_CTLCOLORSTATIC:
+			//Set check boxes background to white
+			hdc = (HDC)wParam;
+			SetBkMode(hdc, TRANSPARENT);
+			hBrush = CreateSolidBrush(RGB(255, 255, 255));
+			return (LRESULT)hBrush;
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
-		break;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
-		EndPaint(hWnd, &ps);
-		break;
-	case WM_SYSCOMMAND:
-		if (wParam == SC_CLOSE) 
-			if (canQuit) {
-				return DefWindowProc(hWnd, message, wParam, lParam);
-			}
-			else {
-				ShowWindow(hWnd, SW_HIDE);
-			}
-		break;
-	case WM_DESTROY:
-		restoreTaskbarState();
-		PostQuitMessage(0);
-		break;
-	case WM_CREATE:
-		//Create GUI checkboxes
-		createChkBoxes(hWnd, lParam);
-		//Initialize AST features
-		initAST(hWnd);
-		break;
-	case WM_CTLCOLORSTATIC:
-		//Set check boxes background to white
-		hdc = (HDC)wParam;
-		SetBkMode(hdc, TRANSPARENT);
-		hBrush = CreateSolidBrush(RGB(255, 255, 255));
-		return (LRESULT)hBrush;
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+
 	}
 	return 0;
 }
