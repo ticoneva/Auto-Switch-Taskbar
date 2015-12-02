@@ -54,6 +54,8 @@ void addContentToCombo(HWND hWndComboBox) {
 }
 
 void createChkBoxes(HWND hWnd,LPARAM lParam) {
+
+	//Check boxes
 	CreateWindow(TEXT("Static"), TEXT("Auto-hide the taskbar when:"),
 		WS_CHILD | WS_VISIBLE, 
 		20, 10, 400, 35, 
@@ -75,6 +77,7 @@ void createChkBoxes(HWND hWnd,LPARAM lParam) {
 		30, 160, 250, 35,
 		hWnd, (HMENU)4, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
+	//Dropdown menu
 	CreateWindow(TEXT("Static"), TEXT("Tablet Mode detection delay:"),
 		WS_CHILD | WS_VISIBLE,
 		20, 220, 400, 35,

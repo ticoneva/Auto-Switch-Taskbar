@@ -3,6 +3,7 @@
 
 static int AppBarState = 0;
 static int queryDelay = -100;
+static int orientChkDelay = 200;
 static int hideSettings[4];
 
 void initAST(HWND hWnd) {
@@ -39,9 +40,14 @@ void initAST(HWND hWnd) {
 	//Query delay
 	retVal2 = readDWORDFromReg(hKey, TEXT("queryDelay"), (DWORD*)&tbMode);
 	if (retVal2 == ERROR_SUCCESS) {
-		tbMode = tbMode;
 		changeComboSel(tbMode);
 		changeDelay(tbMode, FALSE);
+	}
+
+	//Orientation check delay
+	retVal2 = readDWORDFromReg(hKey, TEXT("orientChkDelay"), (DWORD*)&tbMode);
+	if (retVal2 == ERROR_SUCCESS) {
+		orientChkDelay = tbMode;
 	}
 
 	retVal3 = RegCloseKey(hKey);
@@ -130,7 +136,7 @@ void checkTabletMode(int delay) {
 
 		changeStatusText(TEXT("Tablet Mode data retrieved."));
 
-		//Reverse tablet mode data in reserve detection mode
+		//Reverse tablet mode data in reverse detection mode
 		if(delay < 0) tabletMode = 1 - tabletMode;
 
 		if (tabletMode == 1) {
@@ -179,7 +185,7 @@ void checkTabletMode(int delay) {
 	
 }
 
-void OnSettingsChange(LPARAM lParam)
+void onSettingsChange(LPARAM lParam)
 {
 	if (lParam != 0)
 	{
@@ -191,4 +197,8 @@ void OnSettingsChange(LPARAM lParam)
 			checkTabletMode(queryDelay);
 		}
 	}
+}
+
+void onRotation() {
+	checkTabletMode(orientChkDelay);
 }

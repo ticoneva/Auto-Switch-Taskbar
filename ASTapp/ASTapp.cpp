@@ -155,11 +155,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		switch (message)
 		{
+		case WM_POWERBROADCAST:
+			if (wParam == PBT_APMRESUMEAUTOMATIC) {
+				checkTabletMode(0);
+			}
+			else {
+				return DefWindowProc(hWnd, message, wParam, lParam);
+			}
 		case WM_SETTINGCHANGE:
-			OnSettingsChange(lParam);
+			onSettingsChange(lParam);
 			break;
 		case WM_DISPLAYCHANGE:
-			checkTabletMode();
+			onRotation();
 			break;
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);
